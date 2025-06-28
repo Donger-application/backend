@@ -1,6 +1,9 @@
+use actix_web::web;
+use user::user_controller;
+
 pub mod identity;
+pub mod user;
 
 pub fn register_routes(cfg: &mut web::ServiceConfig) {
-    identity::user_controller::register_routes(cfg);
-    identity::role_controller::register_routes(cfg);
+    user::user_controller::register_routes(cfg)
 }
