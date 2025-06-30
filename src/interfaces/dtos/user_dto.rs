@@ -8,7 +8,7 @@ pub struct UserDto {
     pub name: String,
     pub role_id: i32,
     pub is_active: bool,
-    pub register_date: DateTime<Utc>,
+    pub created_date: DateTime<Utc>,
 }
 
 #[derive(Deserialize, Validate)]
