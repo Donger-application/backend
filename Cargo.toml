@@ -4,11 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+migration = { path = "./migration" }
+sea-orm = { version = "0.12", features = ["sqlx-postgres", "runtime-tokio-native-tls", "macros"] }
+dotenvy = "0.15"
+tokio = { version = "1", features = ["full"] }
 actix-web = "4"
-sea-orm = { version = "0.12", features = ["sqlx-postgres", "runtime-actix-native-tls"] }
 serde = { version = "1.0", features = ["derive"] }
 chrono = { version = "0.4", features = ["serde"] }
-dotenvy = "0.15"
 actix = "0.13"
 actix-cors = "0.6"
 jsonwebtoken = "9"

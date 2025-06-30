@@ -1,0 +1,6 @@
+[lib]
+name = "donger_backend"
+path = "src/lib.rs"
+
+[sea-orm-cli]
+database-url = "postgres://postgres:password@localhost:5432/your_database"

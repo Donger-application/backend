@@ -1,24 +1,15 @@
-mod application;
-mod domain;
-mod infrastructure;
-mod interfaces;
+use sea_orm::Database;
+use migration::{Migrator, MigratorTrait};
 
-use actix_web::{App, HttpServer};
-// use domain::identity::services::{user_service::UserService, role_service::RoleService};
-use interfaces::rest::register_routes;
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    // let db = database::init_db().await;
-    
-    HttpServer::new(move || {
-        App::new()
-        .configure(register_routes)
-            // .app_data(web::Data::new(UserService::new(&db)))
-            // .app_data(web::Data::new(RoleService::new(&db)))
-            // .configure(crate::interfaces::rest::register_routes)
-    })
-    .bind("127.0.0.1:8080")?
-    .run()
-    .await
+#[tokio::main]
+async fn main() {
+    dotenvy::dotenv().ok();
+    let db_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+
+    let db = Database::connect(&db_url).await.unwrap();
+
+    Migrator::up(&db, None).await.unwrap();
+
+    println!("Migration ran successfully!");
 }
