@@ -1,3 +1,11 @@
 pub mod identity;
 pub mod role;
 pub mod user;
+pub mod product;
+pub mod stock;
+pub mod supplier;
+pub mod meal;
+pub mod invoice;
+pub mod invoice_details;
+pub mod order;
+pub mod order_details;

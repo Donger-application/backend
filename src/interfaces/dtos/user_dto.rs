@@ -7,6 +7,8 @@ pub struct UserDto {
     pub id: i32,
     pub name: String,
     pub role_id: i32,
+    pub group_id: i32,
+    pub balance: i32,
     pub is_active: bool,
     pub created_date: DateTime<Utc>,
 }
@@ -16,4 +18,5 @@ pub struct CreateUserDto {
     #[validate(length(min = 1))]
     pub name: String,
     pub role_id: i32,
+    pub group_id: i32,
 }
