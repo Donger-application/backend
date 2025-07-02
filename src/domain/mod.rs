@@ -9,3 +9,5 @@ pub mod invoice;
 pub mod invoice_details;
 pub mod order;
 pub mod order_details;
+pub mod system_log;
+pub mod active_session;

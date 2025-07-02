@@ -9,6 +9,18 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
+                    .table(Group::Table)
+                    .if_not_exists()
+                    .col(ColumnDef::new(Group::Id).integer().not_null().primary_key())
+                    .col(ColumnDef::new(Group::Name).string().not_null())
+                    .col(ColumnDef::new(Group::IsPublic).boolean().not_null())
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .create_table(
+                Table::create()
                     .table(Role::Table)
                     .if_not_exists()
                     .col(ColumnDef::new(Role::Id).integer().not_null().primary_key())
@@ -46,21 +58,14 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Group::Table)
-                    .if_not_exists()
-                    .col(ColumnDef::new(Group::Id).integer().not_null().primary_key())
-                    .col(ColumnDef::new(Group::Name).string().not_null())
-                    .col(ColumnDef::new(Group::IsPublic).boolean().not_null())
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .create_table(
-                Table::create()
                     .table(Product::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Product::Id).integer().not_null().primary_key())
+                    .col(
+                        ColumnDef::new(Product::Id)
+                            .integer()
+                            .not_null()
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Product::Name).string().not_null())
                     .col(ColumnDef::new(Product::GroupId).integer().not_null())
                     .foreign_key(
@@ -80,7 +85,12 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Stock::Id).integer().not_null().primary_key())
                     .col(ColumnDef::new(Stock::Price).big_integer().not_null())
                     .col(ColumnDef::new(Stock::Consumed).boolean().not_null())
-                    .col(ColumnDef::new(Stock::ProductId).integer().not_null().unique_key())
+                    .col(
+                        ColumnDef::new(Stock::ProductId)
+                            .integer()
+                            .not_null()
+                            .unique_key(),
+                    )
                     .foreign_key(
                         ForeignKey::create()
                             .from(Stock::Table, Stock::ProductId)
@@ -109,17 +119,90 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
+                    .table(Supplier::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(Supplier::Id)
+                            .integer()
+                            .not_null()
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(Supplier::Balance).integer().not_null())
+                    .col(
+                        ColumnDef::new(Supplier::UserId)
+                            .integer()
+                            .not_null()
+                            .unique_key(),
+                    )
+                    .foreign_key(
+                        ForeignKey::create()
+                            .from(Supplier::Table, Supplier::UserId)
+                            .to(User::Table, User::Id),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .create_table(
+                Table::create()
+                    .table(Customer::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(Customer::Id)
+                            .integer()
+                            .not_null()
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(Customer::UserId).integer().not_null())
+                    .col(ColumnDef::new(Customer::Balance).integer().not_null())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .from(Customer::Table, Customer::UserId)
+                            .to(User::Table, User::Id),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .create_table(
+                Table::create()
                     .table(Invoice::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Invoice::Id).integer().not_null().primary_key())
+                    .col(
+                        ColumnDef::new(Invoice::Id)
+                            .integer()
+                            .not_null()
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Invoice::Price).big_integer().not_null())
                     .col(ColumnDef::new(Invoice::IsDeleted).boolean().not_null())
                     .col(ColumnDef::new(Invoice::DeletedBy).integer().not_null())
                     .col(ColumnDef::new(Invoice::CreatedDate).date_time().not_null())
-                    .col(ColumnDef::new(Invoice::LastModificationDate).date_time().not_null())
-                    .col(ColumnDef::new(Invoice::MealId).integer().not_null().unique_key())
-                    .col(ColumnDef::new(Invoice::GroupId).integer().not_null().unique_key())
-                    .col(ColumnDef::new(Invoice::SupplierId).integer().not_null().unique_key())
+                    .col(
+                        ColumnDef::new(Invoice::LastModificationDate)
+                            .date_time()
+                            .not_null(),
+                    )
+                    .col(
+                        ColumnDef::new(Invoice::MealId)
+                            .integer()
+                            .not_null()
+                            .unique_key(),
+                    )
+                    .col(
+                        ColumnDef::new(Invoice::GroupId)
+                            .integer()
+                            .not_null()
+                            .unique_key(),
+                    )
+                    .col(
+                        ColumnDef::new(Invoice::SupplierId)
+                            .integer()
+                            .not_null()
+                            .unique_key(),
+                    )
                     .foreign_key(
                         ForeignKey::create()
                             .from(Invoice::Table, Invoice::MealId)
@@ -144,8 +227,17 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(InvoiceDetails::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(InvoiceDetails::Id).integer().not_null().primary_key())
-                    .col(ColumnDef::new(InvoiceDetails::InvoiceId).integer().not_null())
+                    .col(
+                        ColumnDef::new(InvoiceDetails::Id)
+                            .integer()
+                            .not_null()
+                            .primary_key(),
+                    )
+                    .col(
+                        ColumnDef::new(InvoiceDetails::InvoiceId)
+                            .integer()
+                            .not_null(),
+                    )
                     .col(ColumnDef::new(InvoiceDetails::StockId).integer().not_null())
                     .foreign_key(
                         ForeignKey::create()
@@ -170,7 +262,11 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Order::IsDeleted).boolean().not_null())
                     .col(ColumnDef::new(Order::DeletedBy).integer().not_null())
                     .col(ColumnDef::new(Order::CreatedDate).date_time().not_null())
-                    .col(ColumnDef::new(Order::LastModificationDate).date_time().not_null())
+                    .col(
+                        ColumnDef::new(Order::LastModificationDate)
+                            .date_time()
+                            .not_null(),
+                    )
                     .col(ColumnDef::new(Order::GroupId).integer().not_null())
                     .foreign_key(
                         ForeignKey::create()
@@ -187,11 +283,15 @@ impl MigrationTrait for Migration {
                     .table(OrderCustomer::Table)
                     .if_not_exists()
                     .col(ColumnDef::new(OrderCustomer::OrderId).integer().not_null())
-                    .col(ColumnDef::new(OrderCustomer::CustomerId).integer().not_null())
+                    .col(
+                        ColumnDef::new(OrderCustomer::CustomerId)
+                            .integer()
+                            .not_null(),
+                    )
                     .primary_key(
                         Index::create()
                             .col(OrderCustomer::OrderId)
-                            .col(OrderCustomer::CustomerId)
+                            .col(OrderCustomer::CustomerId),
                     )
                     .foreign_key(
                         ForeignKey::create()
@@ -212,7 +312,12 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(OrderDetails::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(OrderDetails::Id).integer().not_null().primary_key())
+                    .col(
+                        ColumnDef::new(OrderDetails::Id)
+                            .integer()
+                            .not_null()
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(OrderDetails::OrderId).integer().not_null())
                     .col(ColumnDef::new(OrderDetails::StockId).integer().not_null())
                     .foreign_key(
@@ -228,6 +333,73 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await?;
+
+        manager
+            .create_table(
+                Table::create()
+                    .table(SystemLog::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(SystemLog::Id)
+                            .integer()
+                            .not_null()
+                            .primary_key(),
+                    )
+                    .col(
+                        ColumnDef::new(SystemLog::TransactionType)
+                            .string()
+                            .not_null(),
+                    )
+                    .col(ColumnDef::new(SystemLog::Description).string().not_null())
+                    .col(ColumnDef::new(SystemLog::Date).date_time().not_null())
+                    .col(ColumnDef::new(SystemLog::UserId).integer().not_null())
+                    .col(ColumnDef::new(SystemLog::GroupId).integer().not_null())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .from(SystemLog::Table, SystemLog::UserId)
+                            .to(User::Table, User::Id),
+                    )
+                    .foreign_key(
+                        ForeignKey::create()
+                            .from(SystemLog::Table, SystemLog::GroupId)
+                            .to(Group::Table, Group::Id),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .create_table(
+                Table::create()
+                    .table(ActiveSession::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(ActiveSession::Id)
+                            .integer()
+                            .not_null()
+                            .primary_key(),
+                    )
+                    .col(
+                        ColumnDef::new(ActiveSession::UserId)
+                            .integer()
+                            .not_null()
+                            .unique_key(),
+                    )
+                    .col(ColumnDef::new(ActiveSession::GroupId).integer().not_null())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .from(ActiveSession::Table, ActiveSession::UserId)
+                            .to(User::Table, User::Id),
+                    )
+                    .foreign_key(
+                        ForeignKey::create()
+                            .from(ActiveSession::Table, ActiveSession::GroupId)
+                            .to(Group::Table, Group::Id),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
         Ok(())
     }
 
@@ -264,6 +436,15 @@ impl MigrationTrait for Migration {
             .await?;
         manager
             .drop_table(Table::drop().table(OrderDetails::Table).to_owned())
+            .await?;
+        manager
+            .drop_table(Table::drop().table(SystemLog::Table).to_owned())
+            .await?;
+        manager
+            .drop_table(Table::drop().table(ActiveSession::Table).to_owned())
+            .await?;
+        manager
+            .drop_table(Table::drop().table(Customer::Table).to_owned())
             .await?;
         Ok(())
     }
@@ -372,7 +553,8 @@ enum OrderCustomer {
 enum Customer {
     Table,
     Id,
-    // Add other fields as needed
+    UserId,
+    Balance,
 }
 
 #[derive(Iden)]
@@ -381,4 +563,23 @@ enum OrderDetails {
     Id,
     OrderId,
     StockId,
+}
+
+#[derive(Iden)]
+enum SystemLog {
+    Table,
+    Id,
+    TransactionType,
+    Description,
+    Date,
+    UserId,
+    GroupId,
+}
+
+#[derive(Iden)]
+enum ActiveSession {
+    Table,
+    Id,
+    UserId,
+    GroupId,
 }
