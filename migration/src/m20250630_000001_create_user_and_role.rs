@@ -11,7 +11,7 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Group::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Group::Id).integer().not_null().primary_key())
+                    .col(ColumnDef::new(Group::Id).integer().not_null().primary_key().auto_increment())
                     .col(ColumnDef::new(Group::Name).string().not_null())
                     .col(ColumnDef::new(Group::IsPublic).boolean().not_null())
                     .to_owned(),
@@ -23,7 +23,7 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Role::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Role::Id).integer().not_null().primary_key())
+                    .col(ColumnDef::new(Role::Id).integer().not_null().primary_key().auto_increment())
                     .col(ColumnDef::new(Role::Name).string().not_null())
                     .to_owned(),
             )
@@ -34,7 +34,7 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(User::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(User::Id).integer().not_null().primary_key())
+                    .col(ColumnDef::new(User::Id).integer().not_null().primary_key().auto_increment())
                     .col(ColumnDef::new(User::Name).string().not_null())
                     .col(ColumnDef::new(User::Balance).integer().not_null())
                     .col(ColumnDef::new(User::IsActive).boolean().not_null())
@@ -64,7 +64,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Product::Id)
                             .integer()
                             .not_null()
-                            .primary_key(),
+                            .primary_key().auto_increment(),
                     )
                     .col(ColumnDef::new(Product::Name).string().not_null())
                     .col(ColumnDef::new(Product::GroupId).integer().not_null())
@@ -82,7 +82,7 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Stock::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Stock::Id).integer().not_null().primary_key())
+                    .col(ColumnDef::new(Stock::Id).integer().not_null().primary_key().auto_increment())
                     .col(ColumnDef::new(Stock::Price).big_integer().not_null())
                     .col(ColumnDef::new(Stock::Consumed).boolean().not_null())
                     .col(
@@ -105,7 +105,7 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Meal::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Meal::Id).integer().not_null().primary_key())
+                    .col(ColumnDef::new(Meal::Id).integer().not_null().primary_key().auto_increment())
                     .col(ColumnDef::new(Meal::ProductId).integer().not_null())
                     .foreign_key(
                         ForeignKey::create()
@@ -125,7 +125,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Supplier::Id)
                             .integer()
                             .not_null()
-                            .primary_key(),
+                            .primary_key().auto_increment(),
                     )
                     .col(ColumnDef::new(Supplier::Balance).integer().not_null())
                     .col(
@@ -152,7 +152,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Customer::Id)
                             .integer()
                             .not_null()
-                            .primary_key(),
+                            .primary_key().auto_increment(),
                     )
                     .col(ColumnDef::new(Customer::UserId).integer().not_null())
                     .col(ColumnDef::new(Customer::Balance).integer().not_null())
@@ -174,7 +174,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Invoice::Id)
                             .integer()
                             .not_null()
-                            .primary_key(),
+                            .primary_key().auto_increment(),
                     )
                     .col(ColumnDef::new(Invoice::Price).big_integer().not_null())
                     .col(ColumnDef::new(Invoice::IsDeleted).boolean().not_null())
@@ -231,7 +231,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(InvoiceDetails::Id)
                             .integer()
                             .not_null()
-                            .primary_key(),
+                            .primary_key().auto_increment(),
                     )
                     .col(
                         ColumnDef::new(InvoiceDetails::InvoiceId)
@@ -258,7 +258,7 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Order::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Order::Id).integer().not_null().primary_key())
+                    .col(ColumnDef::new(Order::Id).integer().not_null().primary_key().auto_increment())
                     .col(ColumnDef::new(Order::IsDeleted).boolean().not_null())
                     .col(ColumnDef::new(Order::DeletedBy).integer().not_null())
                     .col(ColumnDef::new(Order::CreatedDate).date_time().not_null())
@@ -316,7 +316,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(OrderDetails::Id)
                             .integer()
                             .not_null()
-                            .primary_key(),
+                            .primary_key().auto_increment(),
                     )
                     .col(ColumnDef::new(OrderDetails::OrderId).integer().not_null())
                     .col(ColumnDef::new(OrderDetails::StockId).integer().not_null())
@@ -343,7 +343,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(SystemLog::Id)
                             .integer()
                             .not_null()
-                            .primary_key(),
+                            .primary_key().auto_increment(),
                     )
                     .col(
                         ColumnDef::new(SystemLog::TransactionType)
@@ -377,7 +377,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(ActiveSession::Id)
                             .integer()
                             .not_null()
-                            .primary_key(),
+                            .primary_key().auto_increment(),
                     )
                     .col(
                         ColumnDef::new(ActiveSession::UserId)

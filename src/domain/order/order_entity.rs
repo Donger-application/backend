@@ -23,7 +23,7 @@ pub enum Relation {
     )]
     Group,
     #[sea_orm(
-        via = "super::order_customer_entity::Entity",
+        belongs_to = "super::order_customer_entity::Entity",
         from = "Column::Id",
         to = "super::order_customer_entity::Column::OrderId"
     )]

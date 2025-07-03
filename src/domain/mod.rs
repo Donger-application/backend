@@ -1,4 +1,3 @@
-pub mod identity;
 pub mod role;
 pub mod user;
 pub mod product;
@@ -10,4 +9,6 @@ pub mod invoice_details;
 pub mod order;
 pub mod order_details;
 pub mod system_log;
+pub mod group;
 pub mod active_session;
+pub mod customer;
