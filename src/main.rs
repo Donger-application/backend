@@ -1,5 +1,6 @@
 mod interfaces;
 mod domain;
+mod infrastructure;
 
 use interfaces::rest;
 use actix_cors::Cors;

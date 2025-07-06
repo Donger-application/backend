@@ -1,17 +1,40 @@
 use sea_orm::entity::prelude::*;
 use crate::domain::supplier::supplier_entity;
+use crate::interfaces::dtos::user_dto::UserDto;
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, serde::Serialize, serde::Deserialize)]
 #[sea_orm(table_name = "users")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     pub name: String,
+    pub password: String,
+    pub email: String,
+    pub email_confirmed: bool,
+    pub user_display_id: String,
     pub balance: i32,
     pub is_active: bool,
     pub role_id: i32,
     pub group_id: i32,
     pub created_date: Date,
+}
+
+impl From<Model> for UserDto {
+    fn from(user: Model) -> Self {
+        UserDto {
+            id: user.id,
+            name: user.name,
+            password: user.password,
+            email: user.email,
+            email_confirmed: user.email_confirmed,
+            user_display_id: user.user_display_id,
+            balance: user.balance,
+            is_active: user.is_active,
+            role_id: user.role_id,
+            group_id: user.group_id,
+            created_date: user.created_date,
+        }
+    }
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
