@@ -1,11 +1,14 @@
-mod interfaces;
 mod domain;
 mod infrastructure;
+mod interfaces;
 
-use interfaces::rest;
 use actix_cors::Cors;
 use actix_web::{http, App, HttpServer};
+use interfaces::rest;
+use interfaces::swagger::api_doc::ApiDoc;
 use sea_orm::Database;
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 use std::env;
 
 #[actix_web::main]
@@ -29,6 +32,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(actix_web::web::Data::new(db.clone())) // Share the db connection
             .wrap(cors)
             .configure(rest::register_route)
+            .service(SwaggerUi::new("/swagger-ui/{_:.*}").url("/api-docs/openapi.json", ApiDoc::openapi()))
     })
     .bind("127.0.0.1:8080")?
     .run()
@@ -52,4 +56,3 @@ async fn main() -> std::io::Result<()> {
 //     let db = Database::connect(&db_url).await.unwrap();
 //     Migrator::up(&db, None).await.unwrap();
 // }
-

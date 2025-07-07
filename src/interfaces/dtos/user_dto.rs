@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
+use utoipa::ToSchema;
 use validator::Validate;
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, ToSchema)]
 pub struct UserDto {
     pub id: i32,
     pub name: String,
