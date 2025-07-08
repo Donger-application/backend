@@ -1,24 +1,27 @@
+use std::path;
+
 use crate::domain::user::user_service::UserService;
 use crate::interfaces::dtos::user_dto::{CreateUserDto, UserDto};
+use actix_web::mime::Params;
 use actix_web::{delete, get, post, put, web, HttpRequest, Responder};
 use sea_orm::DatabaseConnection;
 use serde_json::json;
 
-#[get("/users")]
+#[get("/user")]
 pub async fn get_all_users(
     data: web::Data<DatabaseConnection>,
     _req: HttpRequest,
 ) -> impl Responder {
     match UserService::get_all_users(&data).await {
-        Ok(users) => {
-            let dtos: Vec<UserDto> = users.into_iter().map(|user| user.into()).collect();
+        Ok(user) => {
+            let dtos: Vec<UserDto> = user.into_iter().map(|user| user.into()).collect();
             web::Json(json!({ "status": 200, "data": dtos, "errorMessage": "" }))
         }
         Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
     }
 }
 
-#[get("/users/{id}")]
+#[get("/user/{id}")]
 pub async fn get_user_by_id(
     data: web::Data<DatabaseConnection>,
     _req: HttpRequest,
@@ -34,7 +37,7 @@ pub async fn get_user_by_id(
     }
 }
 
-#[get("/users/email/{email}")]
+#[get("/user/email/{email}")]
 pub async fn get_user_by_email(
     data: web::Data<DatabaseConnection>,
     _req: HttpRequest,
@@ -50,7 +53,7 @@ pub async fn get_user_by_email(
     }
 }
 
-#[get("/users/display/{display_id}")]
+#[get("/user/display/{display_id}")]
 pub async fn get_user_by_display_id(
     data: web::Data<DatabaseConnection>,
     _req: HttpRequest,
@@ -66,22 +69,37 @@ pub async fn get_user_by_display_id(
     }
 }
 
-#[get("/users/search/{name}")]
+#[get("/user/search/{name}")]
 pub async fn get_users_by_name(
     data: web::Data<DatabaseConnection>,
     _req: HttpRequest,
     name: web::Path<String>,
 ) -> impl Responder {
     match UserService::get_user_by_name(&data, &name.into_inner()).await {
-        Ok(users) => {
-            let dtos: Vec<UserDto> = users.into_iter().map(|user| user.into()).collect();
+        Ok(user) => {
+            let dtos: Vec<UserDto> = user.into_iter().map(|user| user.into()).collect();
             web::Json(json!({ "status": 200, "data": dtos, "errorMessage": "" }))
         }
         Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
     }
 }
 
-#[post("/users")]
+#[get("/user/indebt/{group_id}")]
+pub async fn get_user_indebt(
+    data: web::Data<DatabaseConnection>,
+    _req: HttpRequest,
+    group_id: web::Path<i32>,
+) -> impl Responder {
+    match UserService::get_user_indebt(group_id.into_inner(), &data).await {
+        Ok(user) => {
+            let dtos: Vec<UserDto> = user.into_iter().map(|user| user.into()).collect();
+            web::Json(json!({ "status": 200, "data": dtos, "errorMessage": "" }))
+        }
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+    }
+}
+
+#[post("/user")]
 pub async fn create_user(
     data: web::Data<DatabaseConnection>,
     _req: HttpRequest,
@@ -110,7 +128,7 @@ pub async fn create_user(
     }
 }
 
-#[put("/users/{id}")]
+#[put("/user/{id}")]
 pub async fn update_user(
     data: web::Data<DatabaseConnection>,
     _req: HttpRequest,
@@ -141,7 +159,7 @@ pub async fn update_user(
     }
 }
 
-#[delete("/users/{id}")]
+#[delete("/user/{id}")]
 pub async fn delete_user(
     data: web::Data<DatabaseConnection>,
     _req: HttpRequest,
@@ -155,6 +173,7 @@ pub async fn delete_user(
 }
 
 pub fn register_routes(cfg: &mut web::ServiceConfig) {
+    cfg.service(get_user_indebt);
     cfg.service(get_all_users);
     cfg.service(get_user_by_id);
     cfg.service(get_user_by_email);

@@ -1,10 +1,10 @@
-use crate::domain::group::group_entity::{Entity as Group};
-use crate::domain::role::role_entity::{Entity as Role};
+use crate::domain::group::group_entity::Entity as Group;
+use crate::domain::role::role_entity::Entity as Role;
 use crate::domain::user::user_entity;
 use crate::domain::user::user_entity::{
     ActiveModel as UserActiveModel, Entity as User, Model as UserModel,
 };
-use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
+use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, Order, QueryFilter, QueryOrder, Set};
 pub struct UserService;
 
 impl UserService {
@@ -237,5 +237,9 @@ impl UserService {
     pub async fn delete_user(db: &DatabaseConnection, id: i32) -> Result<bool, sea_orm::DbErr> {
         let result = User::delete_by_id(id).exec(db).await?;
         Ok(result.rows_affected > 0)
+    }
+
+    pub async fn get_user_indebt(group_id:i32, db: &DatabaseConnection) -> Result<Vec<UserModel>, sea_orm::DbErr> {
+        User::find().filter(user_entity::Column::GroupId.eq(group_id)).order_by(user_entity::Column::Balance, Order::Asc).all(db).await
     }
 }
