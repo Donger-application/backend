@@ -1,6 +1,7 @@
-use sea_orm::entity::prelude::*;
 use crate::domain::group::group_entity;
 use crate::domain::stock::stock_entity;
+use crate::interfaces::dtos::product_dto::ProductDto;
+use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
 #[sea_orm(table_name = "product")]
@@ -9,6 +10,16 @@ pub struct Model {
     pub id: i32,
     pub name: String,
     pub group_id: i32,
+}
+
+impl From<Model> for ProductDto {
+    fn from(product: Model) -> Self {
+        ProductDto {
+            id: product.id,
+            name: product.name,
+            group_id: product.group_id
+        }
+    }
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -39,4 +50,4 @@ impl Related<stock_entity::Entity> for Entity {
     }
 }
 
-impl ActiveModelBehavior for ActiveModel {} 
+impl ActiveModelBehavior for ActiveModel {}

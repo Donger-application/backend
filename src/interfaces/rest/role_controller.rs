@@ -18,9 +18,9 @@ pub async fn get_all_roles(
                     name: r.name,
                 })
                 .collect();
-            web::Json(json!({ "status": 200, "data": dtos, "errorMessage": "" }))
+            web::Json(json!({ "status": 200, "data": dtos, "error_message": "" }))
         }
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -32,10 +32,10 @@ pub async fn get_role_by_id(
 ) -> impl Responder {
     match RoleService::get_role_by_id(&data, id.into_inner()).await {
         Ok(Some(r)) => web::Json(
-            json!({ "status": 200, "data": [RoleDto { id: r.id, name: r.name }], "errorMessage": "" }),
+            json!({ "status": 200, "data": [RoleDto { id: r.id, name: r.name }], "error_message": "" }),
         ),
-        Ok(None) => web::Json(json!({ "status": 200, "data": [], "errorMessage": "Not found" })),
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Ok(None) => web::Json(json!({ "status": 200, "data": [], "error_message": "Not found" })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -54,10 +54,10 @@ pub async fn get_role_by_name(
                     name: r.name,
                 })
                 .collect();
-            web::Json(json!({ "status": 200, "data": dtos, "errorMessage": "" }))
+            web::Json(json!({ "status": 200, "data": dtos, "error_message": "" }))
         }
-        // Ok(None) => web::Json(json!({ "status": 200, "data": [], "errorMessage": "Not found" })),
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        // Ok(None) => web::Json(json!({ "status": 200, "data": [], "error_message": "Not found" })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -69,9 +69,9 @@ pub async fn create_role(
 ) -> impl Responder {
     match RoleService::create_role(&data, payload.name.clone()).await {
         Ok(r) => web::Json(
-            json!({ "status": 200, "data": [RoleDto { id: r.id, name: r.name }], "errorMessage": "" }),
+            json!({ "status": 200, "data": [RoleDto { id: r.id, name: r.name }], "error_message": "" }),
         ),
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -84,10 +84,10 @@ pub async fn update_role(
 ) -> impl Responder {
     match RoleService::update_role(&data, id.into_inner(), payload.name.clone()).await {
         Ok(Some(r)) => web::Json(
-            json!({ "status": 200, "data": [RoleDto { id: r.id, name: r.name }], "errorMessage": "" }),
+            json!({ "status": 200, "data": [RoleDto { id: r.id, name: r.name }], "error_message": "" }),
         ),
-        Ok(None) => web::Json(json!({ "status": 200, "data": [], "errorMessage": "Not found" })),
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Ok(None) => web::Json(json!({ "status": 200, "data": [], "error_message": "Not found" })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 

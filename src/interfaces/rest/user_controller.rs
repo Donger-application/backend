@@ -1,8 +1,5 @@
-use std::path;
-
 use crate::domain::user::user_service::UserService;
 use crate::interfaces::dtos::user_dto::{CreateUserDto, UserDto};
-use actix_web::mime::Params;
 use actix_web::{delete, get, post, put, web, HttpRequest, Responder};
 use sea_orm::DatabaseConnection;
 use serde_json::json;
@@ -15,9 +12,9 @@ pub async fn get_all_users(
     match UserService::get_all_users(&data).await {
         Ok(user) => {
             let dtos: Vec<UserDto> = user.into_iter().map(|user| user.into()).collect();
-            web::Json(json!({ "status": 200, "data": dtos, "errorMessage": "" }))
+            web::Json(json!({ "status": 200, "data": dtos, "error_message": "" }))
         }
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -30,10 +27,10 @@ pub async fn get_user_by_id(
     match UserService::get_user_by_id(&data, id.into_inner()).await {
         Ok(Some(user)) => {
             let dto: UserDto = user.into();
-            web::Json(json!({ "status": 200, "data": [dto], "errorMessage": "" }))
+            web::Json(json!({ "status": 200, "data": [dto], "error_message": "" }))
         }
-        Ok(None) => web::Json(json!({ "status": 200, "data": [], "errorMessage": "Not found" })),
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Ok(None) => web::Json(json!({ "status": 200, "data": [], "error_message": "Not found" })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -46,10 +43,10 @@ pub async fn get_user_by_email(
     match UserService::get_user_by_email(&data, &email.into_inner()).await {
         Ok(Some(user)) => {
             let dto: UserDto = user.into();
-            web::Json(json!({ "status": 200, "data": [dto], "errorMessage": "" }))
+            web::Json(json!({ "status": 200, "data": [dto], "error_message": "" }))
         }
-        Ok(None) => web::Json(json!({ "status": 200, "data": [], "errorMessage": "Not found" })),
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Ok(None) => web::Json(json!({ "status": 200, "data": [], "error_message": "Not found" })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -62,10 +59,10 @@ pub async fn get_user_by_display_id(
     match UserService::get_user_by_display_id(&data, &display_id.into_inner()).await {
         Ok(Some(user)) => {
             let dto: UserDto = user.into();
-            web::Json(json!({ "status": 200, "data": [dto], "errorMessage": "" }))
+            web::Json(json!({ "status": 200, "data": [dto], "error_message": "" }))
         }
-        Ok(None) => web::Json(json!({ "status": 200, "data": [], "errorMessage": "Not found" })),
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Ok(None) => web::Json(json!({ "status": 200, "data": [], "error_message": "Not found" })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -78,9 +75,9 @@ pub async fn get_users_by_name(
     match UserService::get_user_by_name(&data, &name.into_inner()).await {
         Ok(user) => {
             let dtos: Vec<UserDto> = user.into_iter().map(|user| user.into()).collect();
-            web::Json(json!({ "status": 200, "data": dtos, "errorMessage": "" }))
+            web::Json(json!({ "status": 200, "data": dtos, "error_message": "" }))
         }
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -93,9 +90,9 @@ pub async fn get_user_indebt(
     match UserService::get_user_indebt(group_id.into_inner(), &data).await {
         Ok(user) => {
             let dtos: Vec<UserDto> = user.into_iter().map(|user| user.into()).collect();
-            web::Json(json!({ "status": 200, "data": dtos, "errorMessage": "" }))
+            web::Json(json!({ "status": 200, "data": dtos, "error_message": "" }))
         }
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -122,9 +119,9 @@ pub async fn create_user(
     {
         Ok(user) => {
             let dto: UserDto = user.into();
-            web::Json(json!({ "status": 200, "data": [dto], "errorMessage": "" }))
+            web::Json(json!({ "status": 200, "data": [dto], "error_message": "" }))
         }
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -152,10 +149,10 @@ pub async fn update_user(
     {
         Ok(Some(user)) => {
             let dto: UserDto = user.into();
-            web::Json(json!({ "status": 200, "data": [dto], "errorMessage": "" }))
+            web::Json(json!({ "status": 200, "data": [dto], "error_message": "" }))
         }
-        Ok(None) => web::Json(json!({ "status": 200, "data": [], "errorMessage": "Not found" })),
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Ok(None) => web::Json(json!({ "status": 200, "data": [], "error_message": "Not found" })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 
@@ -166,9 +163,9 @@ pub async fn delete_user(
     id: web::Path<i32>,
 ) -> impl Responder {
     match UserService::delete_user(&data, id.into_inner()).await {
-        Ok(true) => web::Json(json!({ "status": 200, "data": [], "errorMessage": "" })),
-        Ok(false) => web::Json(json!({ "status": 200, "data": [], "errorMessage": "Not found" })),
-        Err(e) => web::Json(json!({ "status": 500, "data": [], "errorMessage": e.to_string() })),
+        Ok(true) => web::Json(json!({ "status": 200, "data": [], "error_message": "" })),
+        Ok(false) => web::Json(json!({ "status": 200, "data": [], "error_message": "Not found" })),
+        Err(e) => web::Json(json!({ "status": 500, "data": [], "error_message": e.to_string() })),
     }
 }
 

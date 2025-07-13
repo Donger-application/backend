@@ -1,5 +1,3 @@
-use serde::{Deserialize, Serialize};
-use chrono::{DateTime, Utc};
 use validator::Validate;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
