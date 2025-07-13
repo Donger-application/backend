@@ -4,7 +4,6 @@ use actix_web::{get, post, put, web, HttpRequest, Responder};
 use sea_orm::DatabaseConnection;
 use serde_json::json;
 
-
 #[get("/role")]
 pub async fn get_all_roles(
     data: web::Data<DatabaseConnection>,
@@ -62,15 +61,6 @@ pub async fn get_role_by_name(
     }
 }
 
-#[utoipa::path(
-    post,
-    path = "/role",
-    request_body(content = CreateRoleDto, content_type = "application/json"),
-    responses(
-        (status = 200, description = "Role created successfully", body = RoleDto),
-        (status = 500, description = "Internal server error", body = String)
-    )
-)]
 #[post("/role")]
 pub async fn create_role(
     data: web::Data<DatabaseConnection>,

@@ -3,7 +3,7 @@ use crate::domain::supplier::supplier_entity;
 use crate::interfaces::dtos::user_dto::UserDto;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, serde::Serialize, serde::Deserialize)]
-#[sea_orm(table_name = "users")]
+#[sea_orm(table_name = "user")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
