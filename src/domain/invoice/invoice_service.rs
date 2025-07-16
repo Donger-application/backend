@@ -1,4 +1,4 @@
-use crate::domain::invoice::invoice_entity::{ActiveModel as InvoiceActiveModel, Entity as Invoice, Model as InvoiceModel};
+use crate::domain::invoice::invoice_entity::{ Entity as Invoice, Model as InvoiceModel};
 use crate::domain::meal::meal_entity::{Entity as Meal};
 use sea_orm::{DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait};
 

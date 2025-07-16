@@ -113,7 +113,6 @@ pub async fn create_user(
         payload.is_active,
         payload.role_id,
         payload.group_id,
-        payload.created_date,
     )
     .await
     {

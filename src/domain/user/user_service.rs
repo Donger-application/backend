@@ -5,6 +5,7 @@ use crate::domain::user::user_entity::{
     ActiveModel as UserActiveModel, Entity as User, Model as UserModel,
 };
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, Order, QueryFilter, QueryOrder, Set};
+use chrono::Utc;
 pub struct UserService;
 
 impl UserService {
@@ -60,7 +61,6 @@ impl UserService {
         is_active: bool,
         role_id: i32,
         group_id: i32,
-        created_date: chrono::NaiveDate,
     ) -> Result<UserModel, sea_orm::DbErr> {
         // Check if email already exists
         let found_user = User::find()
@@ -107,6 +107,7 @@ impl UserService {
             return Err(sea_orm::DbErr::Custom("group does not exist".to_string()));
         }
 
+        let now = Utc::now().naive_utc().date();
         let active_model = UserActiveModel {
             name: Set(name),
             password: Set(password),
@@ -117,7 +118,7 @@ impl UserService {
             is_active: Set(is_active),
             role_id: Set(role_id),
             group_id: Set(group_id),
-            created_date: Set(created_date),
+            created_date: Set(now),
             ..Default::default()
         };
         active_model.insert(db).await

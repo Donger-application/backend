@@ -30,5 +30,4 @@ pub struct CreateUserDto {
     pub is_active: bool,
     pub role_id: i32,
     pub group_id: i32,
-    pub created_date: chrono::NaiveDate,
 }

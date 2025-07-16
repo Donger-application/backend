@@ -12,7 +12,6 @@ pub struct SystemLogDto {
 pub struct CreateSystemLogDto {
     pub transaction_type: String,
     pub description: String,
-    pub date: chrono::NaiveDateTime,
     pub user_id: i32,
     pub group_id: i32,
 } 
