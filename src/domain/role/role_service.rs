@@ -61,4 +61,9 @@ impl RoleService {
             Ok(None)
         }
     }
+
+    pub async fn delete_role(db: &DatabaseConnection, id: i32) -> Result<bool, sea_orm::DbErr> {
+        let result = Role::delete_by_id(id).exec(db).await?;
+        Ok(result.rows_affected > 0)
+    }
 }
