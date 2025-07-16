@@ -1,4 +1,3 @@
-use crate::domain::group::group_entity::Entity as Group;
 use crate::domain::role::role_entity::Entity as Role;
 use crate::domain::user::user_entity;
 use crate::domain::user::user_entity::{
@@ -6,6 +5,8 @@ use crate::domain::user::user_entity::{
 };
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, Order, QueryFilter, QueryOrder, Set};
 use chrono::Utc;
+use crate::domain::group::group_service::GroupService;
+
 pub struct UserService;
 
 impl UserService {
@@ -101,9 +102,8 @@ impl UserService {
             return Err(sea_orm::DbErr::Custom("role does not exist".to_string()));
         }
 
-        // Check if group exists
-        let found_group = Group::find_by_id(group_id).one(db).await?;
-        if found_group.is_none() {
+        // Check if group exists using GroupService
+        if !GroupService::exists_by_id(db, group_id).await? {
             return Err(sea_orm::DbErr::Custom("group does not exist".to_string()));
         }
 
@@ -220,8 +220,7 @@ impl UserService {
             if let Some(group_id) = group_id {
                 // Check if group exists (only if group_id is being changed)
                 if group_id != current_group_id {
-                    let found_group = Group::find_by_id(group_id).one(db).await?;
-                    if found_group.is_none() {
+                    if !GroupService::exists_by_id(db, group_id).await? {
                         return Err(sea_orm::DbErr::Custom("group does not exist".to_string()));
                     }
                 }
@@ -242,5 +241,9 @@ impl UserService {
 
     pub async fn get_user_indebt(group_id:i32, db: &DatabaseConnection) -> Result<Vec<UserModel>, sea_orm::DbErr> {
         User::find().filter(user_entity::Column::GroupId.eq(group_id)).order_by(user_entity::Column::Balance, Order::Asc).all(db).await
+    }
+
+    pub async fn exists_by_id(db: &DatabaseConnection, id: i32) -> Result<bool, sea_orm::DbErr> {
+        Ok(User::find_by_id(id).one(db).await?.is_some())
     }
 }

@@ -1,6 +1,10 @@
-use crate::domain::invoice::invoice_entity::{ Entity as Invoice, Model as InvoiceModel};
-use crate::domain::meal::meal_entity::{Entity as Meal};
-use sea_orm::{DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait};
+use crate::domain::group::group_service::GroupService;
+use crate::domain::supplier::supplier_service::SupplierService;
+use crate::domain::meal::meal_service::MealService;
+use crate::domain::meal::meal_entity::{ActiveModel as MealActiveModel, Entity as Meal};
+use crate::domain::invoice::invoice_entity::{ActiveModel as InvoiceActiveModel, Entity as Invoice, Model as InvoiceModel};
+use sea_orm::{ActiveModelTrait, DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait, Set};
+use chrono::Utc;
 
 pub struct InvoiceService;
 
@@ -46,5 +50,66 @@ impl InvoiceService {
             .filter(crate::domain::invoice::invoice_entity::Column::MealId.is_in(meal_ids))
             .all(db)
             .await
+    }
+
+    pub async fn create_invoice_with_details(
+        db: &DatabaseConnection,
+        price: i64,
+        group_id: i32,
+        supplier_id: i32,
+        product_ids: Vec<i32>,
+    ) -> Result<InvoiceModel, sea_orm::DbErr> {
+        // 2. check if the group_id exists
+        if !GroupService::exists_by_id(db, group_id).await? {
+            return Err(sea_orm::DbErr::Custom("group does not exist".to_string()));
+        }
+        // 3. check if supplier_id exists
+        if !SupplierService::exists_by_id(db, supplier_id).await? {
+            return Err(sea_orm::DbErr::Custom("supplier does not exist".to_string()));
+        }
+        // 4. check for existing meal with product_ids
+        let meal_id = if MealService::exists_with_exact_product_ids(db, &product_ids).await? {
+            // Find the meal id with exactly these product_ids
+            let meals = crate::domain::meal::meal_entity::Entity::find()
+                .filter(crate::domain::meal::meal_entity::Column::ProductId.is_in(product_ids.clone()))
+                .all(db)
+                .await?;
+            use std::collections::HashMap;
+            let mut meal_to_products: HashMap<i32, Vec<i32>> = HashMap::new();
+            for meal in meals {
+                meal_to_products.entry(meal.id).or_default().push(meal.product_id);
+            }
+            let mut found_meal_id = None;
+            let mut sorted_input = product_ids.clone();
+            sorted_input.sort();
+            for (meal_id, products) in meal_to_products {
+                let mut sorted_db = products.clone();
+                sorted_db.sort();
+                if sorted_db == sorted_input {
+                    found_meal_id = Some(meal_id);
+                    break;
+                }
+            }
+            found_meal_id.ok_or_else(|| sea_orm::DbErr::Custom("meal not found after check".to_string()))?
+        } else {
+            // 4.1. create meals using the new service function
+            let created_meals = MealService::create_meal_with_products(db, &product_ids).await?;
+            *created_meals.first().map(|m| &m.id).ok_or_else(|| sea_orm::DbErr::Custom("no meal created".to_string()))?
+        };
+        // 5. create the invoice
+        let now = Utc::now().naive_utc();
+        let invoice_active = InvoiceActiveModel {
+            price: Set(price),
+            is_deleted: Set(false),
+            deleted_by: Set(0),
+            created_date: Set(now),
+            last_modification_date: Set(now),
+            meal_id: Set(meal_id),
+            group_id: Set(group_id),
+            supplier_id: Set(supplier_id),
+            ..Default::default()
+        };
+        let invoice = invoice_active.insert(db).await?;
+        Ok(invoice)
     }
 } 
