@@ -13,6 +13,14 @@ pub struct InvoiceDto {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct InvoiceWeeklyDto {
+    pub id: i32,
+    pub week_day:String,
+    pub meal_name: String,
+    pub created_date: chrono::NaiveDateTime,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CreateInvoiceDto {
     pub price: i64,
     pub meal_id: i32,
