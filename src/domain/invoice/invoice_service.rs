@@ -3,7 +3,8 @@ use crate::domain::supplier::supplier_service::SupplierService;
 use crate::domain::meal::meal_service::MealService;
 use crate::domain::meal::meal_entity::{ActiveModel as MealActiveModel, Entity as Meal};
 use crate::domain::invoice::invoice_entity::{ActiveModel as InvoiceActiveModel, Entity as Invoice, Model as InvoiceModel};
-use crate::interfaces::rest::invoice_controller::get_invoices_weekly;
+use crate::interfaces::dtos::invoice_dto::InvoiceWeeklyDto;
+// use crate::interfaces::rest::invoice_controller::get_invoices_weekly;
 use sea_orm::{ActiveModelTrait, DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait, Set};
 use chrono::Utc;
 
@@ -114,24 +115,24 @@ impl InvoiceService {
         Ok(invoice)
     }
 
-    pub async fn get_invoices_weekly(db: &DatabaseConnection, group_id: i32) -> Result<Vec<InvoiceModel>, sea_orm::DbErr> {
-        let now = Utc::now().naive_utc();
+    // pub async fn get_invoices_weekly(db: &DatabaseConnection, group_id: i32) -> Result<Vec<InvoiceModel>, sea_orm::DbErr> {
+    //     let now = Utc::now().naive_utc();
 
-        let invoices = Invoice::find()
-            .filter(crate::domain::invoice::invoice_entity::Column::GroupId.eq(group_id))
-            .filter(crate::domain::invoice::invoice_entity::Column::CreatedDate.between(now - chrono::Duration::days(7), now))
-            .all(db)
-            .await?;
+    //     let invoices = Invoice::find()
+    //         .filter(crate::domain::invoice::invoice_entity::Column::GroupId.eq(group_id))
+    //         .filter(crate::domain::invoice::invoice_entity::Column::CreatedDate.between(now - chrono::Duration::days(7), now))
+    //         .all(db)
+    //         .await?;
 
-            let mut invoices_weekly: Vec<InvoiceWeeklyDto> = Vec::new();
+    //         let mut invoices_weekly: Vec<InvoiceWeeklyDto> = Vec::new();
 
-            for invoice in invoices {
-                let meal = Meal::find_by_id(invoice.meal_id).one(db).await?;
-                let meal_name = meal.name;
-                let week_day = invoice.created_date.weekday().to_string();
-                invoices_weekly.push(InvoiceWeeklyDto { id: invoice.id, week_day, meal_name, created_date: invoice.created_date });
-            }
+    //         for invoice in invoices {
+    //             // let meal = Meal::find_by_id(invoice.meal_id).one(db).await?;
+    //             let meal_name = "sa".to_string();
+    //             let week_day = "ba".to_string();
+    //             invoices_weekly.push(InvoiceWeeklyDto { id: invoice.id, week_day, meal_name, created_date: invoice.created_date });
+    //         }
 
-        Ok(invoices)
-    }
+    //     Ok(invoices)
+    // }
 } 

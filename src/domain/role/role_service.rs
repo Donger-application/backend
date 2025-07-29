@@ -2,6 +2,8 @@ use crate::domain::role::role_entity;
 use crate::domain::role::role_entity::{
     ActiveModel as RoleActiveModel, Entity as Role, Model as RoleModel,
 };
+use migration::Expr;
+use sea_orm::sea_query::extension::postgres::PgExpr;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 pub struct RoleService;
 
@@ -22,7 +24,7 @@ impl RoleService {
         name: &str,
     ) -> Result<Vec<RoleModel>, sea_orm::DbErr> {
         Role::find()
-            .filter(role_entity::Column::Name.contains(name))
+            .filter(Expr::col(role_entity::Column::Name).ilike(format!("%{}%", name)))
             .all(db)
             .await
     }

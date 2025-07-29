@@ -84,16 +84,16 @@ pub async fn get_invoices_by_product_id(
     }
 }
 
-#[get("/invoice/weekly")]
-pub async fn get_invoices_weekly(data: web::Data<DatabaseConnection>, _req:HttpRequest, group_id: web::Path<i32>)-> impl Responder{
-    match InvoiceService::get_invoices_weekly(&data, group_id.into_inner()).await {
-        Ok(invoices) => {
-            let dtos: Vec<InvoiceDto> = invoices.into_iter().map(|inv| inv.into()).collect();
-            web::Json(ApiResponse::new(200, dtos, ""))
-        }
-        Err(e) => web::Json(ApiResponse::new(500, Vec::<InvoiceDto>::new(), e.to_string())),
-    }
-}
+// #[get("/invoice/weekly")]
+// pub async fn get_invoices_weekly(data: web::Data<DatabaseConnection>, _req:HttpRequest, group_id: web::Path<i32>)-> impl Responder{
+//     match InvoiceService::get_invoices_weekly(&data, group_id.into_inner()).await {
+//         Ok(invoices) => {
+//             let dtos: Vec<InvoiceDto> = invoices.into_iter().map(|inv| inv.into()).collect();
+//             web::Json(ApiResponse::new(200, dtos, ""))
+//         }
+//         Err(e) => web::Json(ApiResponse::new(500, Vec::<InvoiceDto>::new(), e.to_string())),
+//     }
+// }
 
 pub fn register_routes(cfg: &mut web::ServiceConfig) {
     cfg.service(get_invoices);
