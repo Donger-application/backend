@@ -1,10 +1,10 @@
-mod interfaces;
 mod domain;
 mod infrastructure;
+mod interfaces;
 
-use interfaces::rest;
 use actix_cors::Cors;
 use actix_web::{http, App, HttpServer};
+use interfaces::rest;
 use sea_orm::Database;
 use std::env;
 
@@ -52,4 +52,3 @@ async fn main() -> std::io::Result<()> {
 //     let db = Database::connect(&db_url).await.unwrap();
 //     Migrator::up(&db, None).await.unwrap();
 // }
-

@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 migration = { path = "./migration" }
-sea-orm = { version = "0.12", features = ["sqlx-postgres", "runtime-tokio-native-tls", "macros"] }
+sea-orm = { version = "0.12", features = ["sqlx-postgres", "runtime-tokio-native-tls", "macros", "runtime-actix-native-tls"] }
 dotenvy = "0.15"
 tokio = { version = "1", features = ["full"] }
 actix-web = "4"
@@ -17,3 +17,6 @@ jsonwebtoken = "9"
 serde_json = "1.0"
 validator = { version = "0.16", features = ["derive"] }
 async-trait = "0.1"
+utoipa = { version = "3.5.0", features = ["actix_extras"] }
+utoipa-actix-web = "0.1.0"
+utoipa-swagger-ui = { version = "3.1.5", features = ["actix-web"] }

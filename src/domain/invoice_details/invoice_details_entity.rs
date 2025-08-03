@@ -1,6 +1,7 @@
 use sea_orm::entity::prelude::*;
 use crate::domain::invoice::invoice_entity;
 use crate::domain::stock::stock_entity;
+use crate::interfaces::dtos::invoice_details_dto::InvoiceDetailsDto;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
 #[sea_orm(table_name = "invoice_details")]
@@ -38,4 +39,13 @@ impl Related<stock_entity::Entity> for Entity {
     }
 }
 
-impl ActiveModelBehavior for ActiveModel {} 
+impl ActiveModelBehavior for ActiveModel {}
+
+impl From<Model> for InvoiceDetailsDto {
+    fn from(model: Model) -> Self {
+        InvoiceDetailsDto {
+            invoice_id: model.invoice_id,
+            product_id: model.stock_id, // TODO: resolve actual product_id from stock if needed
+        }
+    }
+} 
