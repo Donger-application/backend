@@ -1,6 +1,7 @@
+use utoipa::ToSchema;
 use validator::Validate;
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, ToSchema)]
 pub struct UserDto {
     pub id: i32,
     pub name: String,
@@ -29,5 +30,4 @@ pub struct CreateUserDto {
     pub is_active: bool,
     pub role_id: i32,
     pub group_id: i32,
-    pub created_date: chrono::NaiveDate,
 }
