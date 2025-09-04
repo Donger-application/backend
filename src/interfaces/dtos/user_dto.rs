@@ -1,7 +1,8 @@
 use utoipa::ToSchema;
 use validator::Validate;
+use chrono::NaiveDateTime;
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, ToSchema)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, ToSchema, sqlx::FromRow)]
 pub struct UserDto {
     pub id: i32,
     pub name: String,
@@ -12,8 +13,7 @@ pub struct UserDto {
     pub balance: i32,
     pub is_active: bool,
     pub role_id: i32,
-    pub group_id: i32,
-    pub created_date: chrono::NaiveDate,
+    pub group_id: i32
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, Validate)]

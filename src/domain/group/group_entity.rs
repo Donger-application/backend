@@ -1,15 +1,9 @@
-use sea_orm::entity::prelude::*;
+use serde::{Deserialize, Serialize};
+use sqlx::prelude::FromRow;
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
-#[sea_orm(table_name = "group")]
-pub struct Model {
-    #[sea_orm(primary_key)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+pub struct Group {
     pub id: i32,
     pub name: String,
     pub is_public: bool,
 }
-
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {}
-
-impl ActiveModelBehavior for ActiveModel {}
