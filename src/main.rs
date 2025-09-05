@@ -6,26 +6,14 @@ use actix_cors::Cors;
 use actix_web::{http, App, HttpServer};
 use interfaces::rest;
 use sqlx::PgPool;
-use sqlx_clean_querybuilder::query_builder::PostgreSqlQueryBuilder;
-// use sea_orm::Database;
 use std::env;
 
-use crate::interfaces::dtos::user_dto::UserDto;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenvy::dotenv().ok();
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let db = PgPool::connect(&db_url).await.unwrap();
-
-    let qq = PostgreSqlQueryBuilder::select().columns(&[]).table("user", None).build();
-
-    let users: Vec<UserDto> = sqlx::query_as::<_, UserDto>(&qq)
-    .fetch_all(&db)
-    .await
-    .unwrap();
-
-    println!("All users: {:#?}", users);
 
     HttpServer::new(move || {
         let cors = Cors::default()

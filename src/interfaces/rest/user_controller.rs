@@ -1,8 +1,11 @@
-use actix_web::{web};
+use actix_web::{get, web, HttpRequest, Responder};
+use sqlx::PgPool;
+
+use crate::{domain::user::user_service::UserService, interfaces::dtos::{response_dto::ApiResponse, user_dto::UserDisplayDto}};
 
 // #[get("/user")]
 // pub async fn get_all_users(
-//     data: web::Data<DatabaseConnection>,
+//     data: web::Data<PgPool>,
 //     _req: HttpRequest,
 // ) -> impl Responder {
 //     match UserService::get_all_users(&data).await {
@@ -16,7 +19,7 @@ use actix_web::{web};
 
 // #[get("/user/{id}")]
 // pub async fn get_user_by_id(
-//     data: web::Data<DatabaseConnection>,
+//     data: web::Data<PgPool>,
 //     _req: HttpRequest,
 //     id: web::Path<i32>,
 // ) -> impl Responder {
@@ -32,7 +35,7 @@ use actix_web::{web};
 
 // #[get("/user/email/{email}")]
 // pub async fn get_user_by_email(
-//     data: web::Data<DatabaseConnection>,
+//     data: web::Data<PgPool>,
 //     _req: HttpRequest,
 //     email: web::Path<String>,
 // ) -> impl Responder {
@@ -48,7 +51,7 @@ use actix_web::{web};
 
 // #[get("/user/display/{display_id}")]
 // pub async fn get_user_by_display_id(
-//     data: web::Data<DatabaseConnection>,
+//     data: web::Data<PgPool>,
 //     _req: HttpRequest,
 //     display_id: web::Path<String>,
 // ) -> impl Responder {
@@ -64,7 +67,7 @@ use actix_web::{web};
 
 // #[get("/user/search/{name}")]
 // pub async fn get_users_by_name(
-//     data: web::Data<DatabaseConnection>,
+//     data: web::Data<PgPool>,
 //     _req: HttpRequest,
 //     name: web::Path<String>,
 // ) -> impl Responder {
@@ -77,24 +80,24 @@ use actix_web::{web};
 //     }
 // }
 
-// #[get("/user/indebt/{group_id}")]
-// pub async fn get_user_indebt(
-//     data: web::Data<DatabaseConnection>,
-//     _req: HttpRequest,
-//     group_id: web::Path<i32>,
-// ) -> impl Responder {
-//     match UserService::get_user_indebt(group_id.into_inner(), &data).await {
-//         Ok(user) => {
-//             let dtos: Vec<UserDto> = user.into_iter().map(|user| user.into()).collect();
-//             web::Json(ApiResponse::new(200, dtos, ""))
-//         }
-//         Err(e) => web::Json(ApiResponse::new(500, Vec::<UserDto>::new(), e.to_string())),
-//     }
-// }
+#[get("/user/indebt/{group_id}")]
+pub async fn get_user_indebt(
+    data: web::Data<PgPool>,
+    _req: HttpRequest,
+    group_id: web::Path<i32>,
+) -> impl Responder {
+    match UserService::get_user_indebt(group_id.into_inner(), data.get_ref().clone()).await {
+        Ok(users) => {
+            let dtos: Vec<UserDisplayDto> = users.into_iter().map(|user| user.into()).collect();
+            web::Json(ApiResponse::new(200, dtos, ""))
+        }
+        Err(e) => web::Json(ApiResponse::new(500, Vec::<UserDisplayDto>::new(), e.to_string())),
+    }
+}
 
 // #[post("/user")]
 // pub async fn create_user(
-//     data: web::Data<DatabaseConnection>,
+//     data: web::Data<PgPool>,
 //     _req: HttpRequest,
 //     payload: web::Json<CreateUserDto>,
 // ) -> impl Responder {
@@ -122,7 +125,7 @@ use actix_web::{web};
 
 // #[put("/user/{id}")]
 // pub async fn update_user(
-//     data: web::Data<DatabaseConnection>,
+//     data: web::Data<PgPool>,
 //     _req: HttpRequest,
 //     id: web::Path<i32>,
 //     payload: web::Json<CreateUserDto>,
@@ -153,7 +156,7 @@ use actix_web::{web};
 
 // #[delete("/user/{id}")]
 // pub async fn delete_user(
-//     data: web::Data<DatabaseConnection>,
+//     data: web::Data<PgPool>,
 //     _req: HttpRequest,
 //     id: web::Path<i32>,
 // ) -> impl Responder {
@@ -165,7 +168,7 @@ use actix_web::{web};
 // }
 
 pub fn register_routes(cfg: &mut web::ServiceConfig) {
-    // cfg.service(get_user_indebt);
+    cfg.service(get_user_indebt);
     // cfg.service(get_all_users);
     // cfg.service(get_user_by_id);
     // cfg.service(get_user_by_email);

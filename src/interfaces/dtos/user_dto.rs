@@ -1,6 +1,6 @@
+use chrono::NaiveDateTime;
 use utoipa::ToSchema;
 use validator::Validate;
-use chrono::NaiveDateTime;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, ToSchema, sqlx::FromRow)]
 pub struct UserDto {
@@ -13,7 +13,14 @@ pub struct UserDto {
     pub balance: i32,
     pub is_active: bool,
     pub role_id: i32,
-    pub group_id: i32
+    pub group_id: i32,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, ToSchema, sqlx::FromRow)]
+pub struct UserDisplayDto {
+    pub id: i32,
+    pub name: String,
+    pub balance: i32,
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, Validate)]
@@ -24,7 +31,10 @@ pub struct CreateUserDto {
     #[validate(email(message = "Invalid email format"))]
     pub email: String,
     pub email_confirmed: bool,
-    #[validate(length(min = 3, message = "User display ID must be at least 3 characters long"))]
+    #[validate(length(
+        min = 3,
+        message = "User display ID must be at least 3 characters long"
+    ))]
     pub user_display_id: String,
     pub balance: i32,
     pub is_active: bool,
