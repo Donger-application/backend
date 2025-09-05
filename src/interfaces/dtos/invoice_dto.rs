@@ -1,29 +1,26 @@
+use sqlx::FromRow;
+use chrono::NaiveDateTime;
+use crate::interfaces::dtos::supplier_dto::SupplierDto;
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, FromRow)]
+struct InvoiceRow {
+    id: i32,
+    price: i32,
+    created_date: NaiveDateTime,
+    supplier_id: i32,
+    supplier_name: String,
+    meal: String, // string_agg result
+}
+
+#[derive(Debug)]
 pub struct InvoiceDto {
-    pub id: i32,
-    pub price: i64,
-    pub is_deleted: bool,
-    pub deleted_by: i32,
-    pub created_date: chrono::NaiveDateTime,
-    pub last_modification_date: chrono::NaiveDateTime,
-    pub meal_id: i32,
-    pub group_id: i32,
-    pub supplier_id: i32,
+    supplier: SupplierDto,
+    price: i32,
+    meal: Vec<String>, // split string_agg into Vec<String>
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct InvoiceWeeklyDto {
-    pub id: i32,
-    pub week_day:String,
-    pub meal_name: String,
-    pub created_date: chrono::NaiveDateTime,
+#[derive(Debug)]
+struct InvoiceResponse {
+    date: NaiveDateTime,
+    invoices: Vec<InvoiceDto>,
 }
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct CreateInvoiceDto {
-    pub price: i64,
-    pub meal_id: i32,
-    pub group_id: i32,
-    pub supplier_id: i32,
-} 

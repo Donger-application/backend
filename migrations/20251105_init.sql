@@ -222,3 +222,17 @@ create table if not exists active_session
 
 alter table active_session
     owner to postgres;
+
+
+-- removing unique from indexes
+ALTER TABLE invoice DROP CONSTRAINT invoice_meal_id_key;
+ALTER TABLE invoice DROP CONSTRAINT invoice_group_id_key;
+ALTER TABLE invoice DROP CONSTRAINT invoice_supplier_id_key;
+
+DROP INDEX IF EXISTS invoice_meal_id_key;
+DROP INDEX IF EXISTS invoice_group_id_key;
+DROP INDEX IF EXISTS invoice_supplier_id_key;
+
+CREATE INDEX invoice_meal_id_idx ON invoice(meal_id);
+CREATE INDEX invoice_group_id_idx ON invoice(group_id);
+CREATE INDEX invoice_supplier_id_idx ON invoice(supplier_id);

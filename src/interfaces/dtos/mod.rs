@@ -5,3 +5,4 @@ pub mod meal_dto;
 pub mod response_dto;
 pub mod invoice_dto;
 pub mod invoice_details_dto;
+pub mod supplier_dto;
