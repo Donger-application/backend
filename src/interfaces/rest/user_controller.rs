@@ -88,8 +88,7 @@ pub async fn get_user_indebt(
 ) -> impl Responder {
     match UserService::get_user_indebt(group_id.into_inner(), data.get_ref().clone()).await {
         Ok(users) => {
-            let dtos: Vec<UserDisplayDto> = users.into_iter().map(|user| user.into()).collect();
-            web::Json(ApiResponse::new(200, dtos, ""))
+            web::Json(ApiResponse::new(200, users, ""))
         }
         Err(e) => web::Json(ApiResponse::new(500, Vec::<UserDisplayDto>::new(), e.to_string())),
     }
