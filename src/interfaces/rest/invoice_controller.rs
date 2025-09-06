@@ -21,8 +21,7 @@ pub async fn get_invoice_report(
     .await
     {
         Ok(invoices) => {
-            let dtos: Vec<InvoiceResponse> = invoices.into_iter().map(|inv| inv.into()).collect();
-            web::Json(ApiResponse::new(200, dtos, ""))
+            web::Json(ApiResponse::new(200, invoices, ""))
         }
         Err(e) => web::Json(ApiResponse::new(
             500,
