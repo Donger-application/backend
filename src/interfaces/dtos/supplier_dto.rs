@@ -1,6 +1,9 @@
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+
+#[derive(Debug, Serialize, Deserialize)]
+
 pub struct SupplierDto {
-    id: i32,
-    name: String,
+    pub id: i32,
+    pub name: String,
 }
